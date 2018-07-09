@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <h2>游戏信息</h2>
+    <table>
+        <thead>
+            <tr>
+                <td>游戏名称</td>
+                <td>游戏类型</td>
+                <td>开发公司</td>
+                <td>上市日期</td>
+            </tr>
+        </thead>
+        <tbody id="show"></tbody>
+        <tfoot id="page"></tfoot>
+    </table>
+</body>
+<script src="/jquery-1.12.3.min.js" type="text/javascript"></script>
+<script>
+    $(function () {
+        page(1);
+    })
+    function page(index) {
+        var content = "";
+        var page = "";
+        var name = "";
+        $.getJSON("page.action",{"index":index,"name":name},
+            function (result) {
+                if (result.pageNo>1) {
+                    page +="<a href='javaScript:page("+1+")'>首页</a>"+
+                            "<a href='javaScript:page("+((result.pageNo)-1)+")'>上一页</a>"
+                }
+                $.each(result.infoList,function (i,e) {
+                    content +="<tr>"+
+                              "<td>"+e.name+"</td>"+
+                              "<td>"+e.type+"</td>"+
+                              "<td>"+e.company+"</td>"+
+                              "<td>"+e.year+"</td>"+
+                              "<tr>"
+                })
+                if (result.pageNo<result.pageSize) {
+                    page +="<a href='javaScript:page("+((result.pageNo)+1)+")'>下一页</a>"+
+                            "<a href='javaScript:page("+result.pageCount+")'>末页</a>"
+                }
+                $("#show").html(content);
+                $("#page").html(page);
+            }
+        ,"json")
+    }
+</script>
+</html>
